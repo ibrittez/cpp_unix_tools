@@ -17,9 +17,6 @@ help:
 	@echo "  $(YELLOW)make arm64$(NC)  		- Cross-compile for ARM64 (Linaro)"
 	@echo "  $(YELLOW)make all$(NC)    		- Compile both targets"
 	@echo "  $(YELLOW)make clean$(NC)  		- Clean all build artifacts"
-	@echo "  $(YELLOW)make run-host$(NC)		- Run on host"
-	@echo "  $(YELLOW)make productor$(NC)	- Run productor on host"
-	@echo "  $(YELLOW)make consumidor$(NC)	- Run consumidor on host"
 	@echo "  $(YELLOW)make deploy$(NC) 		- Copy ARM64 binaries to target device"
 
 # Compilar para host
@@ -46,29 +43,7 @@ clean:
 	@rm -rf build
 	@echo "$(GREEN)✓ Clean complete$(NC)"
 
-# Ejecutar en host (ejemplo)
-run-host: host
-	@echo "$(GREEN)Running on host...$(NC)"
-	@echo "Open two terminals:"
-	@echo "  Terminal 1: ./build/host/bin/consumidor"
-	@echo "  Terminal 2: ./build/host/bin/productor"
-
-productor: host
-	@clear
-	@echo "Abriendo productor:"
-	@./build/host/bin/productor
-
-consumidor: host
-	@clear
-	@echo "Abriendo consumidor:"
-	@./build/host/bin/consumidor
-
 deploy: arm64
 	@echo "$(GREEN)Deploying to $(SSH_TARGET):$(DEPLOY_PATH)$(NC)"
 	@ssh $(SSH_TARGET) "mkdir -p $(DEPLOY_PATH)"
-	@scp build/arm64/bin/productor_arm64 $(SSH_TARGET):$(DEPLOY_PATH)/productor
-	@scp build/arm64/bin/consumidor_arm64 $(SSH_TARGET):$(DEPLOY_PATH)/consumidor
-	@echo "$(GREEN)✓ Deployed. SSH into device and run:$(NC)"
-	@echo "  cd $(DEPLOY_PATH)"
-	@echo "  ./consumidor  # Terminal 1"
-	@echo "  ./productor   # Terminal 2"
+	@scp build/arm64/bin/procesos_arm64 $(SSH_TARGET):$(DEPLOY_PATH)/procesos
