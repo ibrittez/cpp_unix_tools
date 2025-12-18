@@ -20,12 +20,15 @@ endif()
 # Paths
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(COMMON_DIR ${SRC_DIR}/common)
+set(LOGGER_DIR ${SRC_DIR}/logger)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Includes globales (simple y efectivo)
 include_directories(
     ${SRC_DIR}
     ${COMMON_DIR}
+    ${LOGGER_DIR}
 )
 
 # ======================
@@ -52,6 +55,16 @@ target_link_libraries(consumidor${TARGET_SUFFIX}
     pthread
 )
 
+# ======================
+# LOGGER (proceso logger standalone)
+# ======================
+add_executable(logger${TARGET_SUFFIX}
+    ${SRC_DIR}/logger.cpp
+)
+
+target_link_libraries(logger${TARGET_SUFFIX}
+    pthread
+)
 
 # ======================
 # APP (launcher)
@@ -72,6 +85,7 @@ message(STATUS "=== BUILD CONFIGURATION ===")
 message(STATUS "Executables:")
 message(STATUS "  - productor${TARGET_SUFFIX}")
 message(STATUS "  - consumidor${TARGET_SUFFIX}")
+message(STATUS "  - logger${TARGET_SUFFIX}")
 message(STATUS "  - app${TARGET_SUFFIX}")
 message(STATUS "")
 message(STATUS "Output directory: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
