@@ -26,6 +26,8 @@ int main(void) {
         exit(1);
     }
 
+    usleep(1000 * 10);
+
     pid_t pidConsumidor = fork();
 
     if(pidConsumidor == 0) {
@@ -35,6 +37,8 @@ int main(void) {
         exit(1);
     }
 
+    usleep(1000 * 10);
+
     pid_t pidLogger = fork();
 
     if(pidLogger == 0) {
@@ -43,20 +47,25 @@ int main(void) {
         perror("exec failed");
         exit(1);
     }
+
+    usleep(1000 * 10);
+
     while(app) { ; }
 
     std::cout << "[app] intentando finalizar el logger" << std::endl;
     kill(pidLogger, SIGUSR1);
+
+    usleep(1000 * 100);
+
     std::cout << "[app] intentando finalizar el consumidor" << std::endl;
     kill(pidConsumidor, SIGUSR1);
 
-    sleep(1);
+    usleep(1000 * 100);
 
     std::cout << "[app] intentando finalizar el simulador" << std::endl;
     kill(pidProductor, SIGUSR1);
 
-    sleep(1);
-
+    usleep(1000 * 100);
 
     // si siguen vivos, a la mierda
     kill(pidLogger, SIGKILL);
