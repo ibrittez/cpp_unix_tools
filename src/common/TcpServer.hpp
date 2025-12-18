@@ -32,7 +32,7 @@ public:
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_flags = AI_PASSIVE; // Para bind a cualquier interfaz
 
-        r = getaddrinfo(nullptr, "8080", &hints, &server);
+        r = getaddrinfo(nullptr, port.c_str(), &hints, &server);
         if(r != 0) {
             cerr << "[Server] getaddrinfo error: " << gai_strerror(r) << "\n";
             return;

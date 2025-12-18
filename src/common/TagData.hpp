@@ -6,8 +6,8 @@
 #include <cstring>
 #include <iomanip>
 #include <ostream>
-#include <string>
 #include <sstream>
+#include <string>
 
 // Estructura que se enviará por IPC
 struct TagData {
