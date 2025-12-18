@@ -37,7 +37,7 @@ int main() {
         std::uniform_int_distribution<> rssi_dist(-80, -40); // RSSI típico
         std::uniform_real_distribution<> temp_dist(15.0, 30.0); // Temperatura ambiente
 
-        cout << "[simulador] generando datos aleatorio, ^C para salir.\n";
+        cout << "[simulador] generando datos aleatorios\n";
         for(int i = 0; gProductorRunning; ++i) {
             TagData tag;
 
@@ -54,7 +54,7 @@ int main() {
 
         cout << "[simulador] eliminado cola de mensajes" << std::endl;
         queue.remove();
-        cout << "[simulador] saliendo..." << std::endl;
+        cout << "[simulador] cerrado con éxito" << std::endl;
     }
     catch(const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";

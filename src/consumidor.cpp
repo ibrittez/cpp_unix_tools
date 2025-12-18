@@ -50,7 +50,7 @@ int main() {
             }
         }
 
-        cout << "[consumidor] saliendo..." << std::endl;
+        cout << "[consumidor] cerrado con éxito" << std::endl;
     }
     catch(const std::exception& e) {
         std::cerr << "[consumidor] Error: " << e.what() << "\n";

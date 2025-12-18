@@ -47,7 +47,6 @@ int main(void) {
 
     sleep(1);
 
-    std::cout << "[app] cerrando..." << std::endl;
 
     // si siguen vivos, a la mierda
     kill(pidProductor, SIGKILL);
@@ -55,6 +54,8 @@ int main(void) {
 
     waitpid(pidProductor, nullptr, 0);
     waitpid(pidConsumidor, nullptr, 0);
+
+    std::cout << "[app] aplicación cerrada con éxito" << std::endl;
 
     return 0;
 }
