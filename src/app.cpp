@@ -35,8 +35,18 @@ int main(void) {
         exit(1);
     }
 
+    pid_t pidLogger = fork();
+
+    if(pidLogger == 0) {
+        std::cout << "[app]:[logger] inicializado con pid: " << getpid() << std::endl;
+        execlp("./logger", "logger", nullptr);
+        perror("exec failed");
+        exit(1);
+    }
     while(app) { ; }
 
+    std::cout << "[app] intentando finalizar el logger" << std::endl;
+    kill(pidLogger, SIGUSR1);
     std::cout << "[app] intentando finalizar el consumidor" << std::endl;
     kill(pidConsumidor, SIGUSR1);
 
@@ -49,9 +59,11 @@ int main(void) {
 
 
     // si siguen vivos, a la mierda
+    kill(pidLogger, SIGKILL);
     kill(pidProductor, SIGKILL);
     kill(pidConsumidor, SIGKILL);
 
+    waitpid(pidLogger, nullptr, 0);
     waitpid(pidProductor, nullptr, 0);
     waitpid(pidConsumidor, nullptr, 0);
 
