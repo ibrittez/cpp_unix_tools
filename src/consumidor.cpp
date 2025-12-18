@@ -4,6 +4,7 @@
  */
 
 #include "MessageQueue.hpp"
+#include "RingBuffer.hpp"
 #include "TagData.hpp"
 #include <atomic>
 #include <chrono>
@@ -28,6 +29,7 @@ int main() {
 
     try {
         MessageQueue<TagData> queue("/tmp", 'B', true);
+        RingBuffer buff(10);
 
         ofstream logfile("consumidor.log", std::ios::app);
 
@@ -39,6 +41,7 @@ int main() {
         while(running) {
             try {
                 TagData data = queue.receive();
+                buff.push(data.to_string());
                 // data.print(std::cout);
                 // data.print(logfile);
             }
