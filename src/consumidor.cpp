@@ -27,7 +27,6 @@ int main() {
     std::signal(SIGTERM, SIG_IGN);
 
     try {
-        MessageQueue<TagData> queue("/tmp", 'B', true);
         RingBuffer buff(10);
 
         ofstream logfile("consumidor.log", std::ios::app);
@@ -36,13 +35,14 @@ int main() {
 
         string line;
         int count = 0;
+        MessageQueue<TagData> rxQueue("/tmp", 'B', false);
 
         while(gConsumidorRunning) {
             try {
-                TagData data = queue.receive();
                 buff.push(data.to_string());
                 // data.print(std::cout);
                 // data.print(logfile);
+                TagData data = rxQueue.receive();
             }
             catch(const std::runtime_error& e) {
                 if(!gConsumidorRunning) break; /* Por las dudas verifico */
