@@ -14,9 +14,9 @@
 
 using namespace std;
 
-std::atomic<bool> running{true};
-void signal_handler(int signum) {
-    running = false;
+std::atomic<bool> gProductorRunning{true};
+static void signal_handler(int signum) {
+    gProductorRunning = false;
 }
 
 int main() {
@@ -38,7 +38,7 @@ int main() {
         std::uniform_real_distribution<> temp_dist(15.0, 30.0); // Temperatura ambiente
 
         cout << "[simulador] generando datos aleatorio, ^C para salir.\n";
-        for(int i = 0; running; ++i) {
+        for(int i = 0; gProductorRunning; ++i) {
             TagData tag;
 
             // Generar EPC realista (manufacturer E282 = Axzon, model 450 = Opus)

@@ -16,9 +16,9 @@
 
 using namespace std;
 
-std::atomic<bool> running{true};
-void signal_handler(int signum) {
-    running = false;
+std::atomic<bool> gConsumidorRunning{true};
+static void signal_handler(int signum) {
+    gConsumidorRunning = false;
 }
 
 int main() {
@@ -37,7 +37,7 @@ int main() {
         string line;
         int count = 0;
 
-        while(running) {
+        while(gConsumidorRunning) {
             try {
                 TagData data = queue.receive();
                 buff.push(data.to_string());
@@ -45,7 +45,7 @@ int main() {
                 // data.print(logfile);
             }
             catch(const std::runtime_error& e) {
-                if(!running) break; /* Por las dudas verifico */
+                if(!gConsumidorRunning) break; /* Por las dudas verifico */
                 throw;
             }
         }
