@@ -29,19 +29,13 @@ int main() {
     try {
         RingBuffer buff(10);
 
-        ofstream logfile("consumidor.log", std::ios::app);
-
         cout << "[consumidor] iniciando...\n";
 
-        string line;
-        int count = 0;
         MessageQueue<TagData> rxQueue("/tmp", 'B', false);
 
         while(gConsumidorRunning) {
             try {
                 buff.push(data.to_string());
-                // data.print(std::cout);
-                // data.print(logfile);
                 TagData data = rxQueue.receive();
             }
             catch(const std::runtime_error& e) {
