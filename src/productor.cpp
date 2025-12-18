@@ -16,14 +16,13 @@ using namespace std;
 
 std::atomic<bool> running{true};
 void signal_handler(int signum) {
-    std::cout << "\n[SIGINT recibida <CR> para cerrar]\n";
     running = false;
 }
 
 int main() {
-    /* Uso el manejador para ^C o SIGTERM */
-    std::signal(SIGINT, signal_handler);
-    std::signal(SIGTERM, signal_handler);
+    std::signal(SIGUSR1, signal_handler);
+    std::signal(SIGINT, SIG_IGN);
+    std::signal(SIGTERM, SIG_IGN);
 
     try {
         MessageQueue<TagData> queue("/tmp", 'B', true);
@@ -37,7 +36,7 @@ int main() {
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> rssi_dist(-80, -40); // RSSI típico
         std::uniform_real_distribution<> temp_dist(15.0, 30.0); // Temperatura ambiente
-        
+
         cout << "[simulador] generando datos aleatorio, ^C para salir.\n";
         for(int i = 0; running; ++i) {
             TagData tag;
@@ -50,11 +49,12 @@ int main() {
             tag.timestamp = time(nullptr);
 
             queue.send(tag);
-            usleep(1000*100);
+            usleep(1000 * 100);
         }
 
+        cout << "[simulador] eliminado cola de mensajes" << std::endl;
         queue.remove();
-        cout << "cola de mensajes eliminada, saliendo...\n";
+        cout << "[simulador] saliendo..." << std::endl;
     }
     catch(const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";

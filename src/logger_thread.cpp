@@ -22,14 +22,14 @@ void logger_thread(RingBuffer& ring, std::atomic<bool>& running) {
     string port = "8080";
     TcpServer server(port);
 
-    cout << "[Logger] Listening on port " << port << " ...\n";
+    cout << "[logger] listening on port " << port << " ...\n";
 
     // Loop principal: aceptar conexiones
     while(running) {
         int clientFd = server.accept_connection_timeout(250);
         if(clientFd == -1) { continue; }
 
-        cout << "[Logger] Client connected\n";
+        cout << "[logger] client connected\n";
 
         /* atiendo al cliente (post retorna <= 0 en desconexión). */
         while(running) {
@@ -43,12 +43,12 @@ void logger_thread(RingBuffer& ring, std::atomic<bool>& running) {
         }
 
         close(clientFd);
-        cout << "[Logger] Client connection closed\n";
+        cout << "[logger] client connection closed\n";
     }
 
     server.close_server();
 
-    cout << "[Logger] Thread exiting gracefully\n";
+    cout << "[logger] thread exiting gracefully\n";
 }
 
 /*** end of file ***/

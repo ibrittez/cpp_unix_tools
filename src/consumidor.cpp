@@ -19,14 +19,13 @@ using namespace std;
 
 std::atomic<bool> running{true};
 void signal_handler(int signum) {
-    std::cout << "\n[SIGINT o SIGTERM recibida, cerrando...]\n";
     running = false;
 }
 
 int main() {
-    std::signal(SIGINT, signal_handler);
-    std::signal(SIGTERM, signal_handler);
-    std::signal(SIGPIPE, SIG_IGN); /* Ignoro el ^C pipeado desde el hilo */
+    std::signal(SIGUSR1, signal_handler);
+    std::signal(SIGINT, SIG_IGN);
+    std::signal(SIGTERM, SIG_IGN);
 
     try {
         MessageQueue<TagData> queue("/tmp", 'B', true);
@@ -36,7 +35,7 @@ int main() {
 
         ofstream logfile("consumidor.log", std::ios::app);
 
-        cout << "====   CONSUMIDOR DE MENSAJES   ====\n";
+        cout << "[consumidor] iniciando...\n";
 
         string line;
         int count = 0;
@@ -54,12 +53,13 @@ int main() {
             }
         }
 
-        cout << "esperando a que termine el hilo\n";
+        cout << "[consumidor] esperando a que termine el hilo logger...\n";
         logger.join();
+        cout << "[consumidor] saliendo..." << std::endl;
     }
     catch(const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
-        std::cerr << "Perhaps, the producer closed the queque first.\n";
+        std::cerr << "[consumidor] Error: " << e.what() << "\n";
+        std::cerr << "[consumidor] Perhaps, the producer closed the queque first.\n";
         return 1;
     }
 }
