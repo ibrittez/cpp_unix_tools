@@ -37,11 +37,17 @@ add_executable(consumidor${TARGET_SUFFIX}
     ${SRC_DIR}/logger_thread.cpp
 )
 
+# Ejecutable: Consumidor (con logger_thread)
+add_executable(app${TARGET_SUFFIX}
+    ${SRC_DIR}/app.cpp
+)
+
 # Librerías necesarias
 # rt: POSIX message queues y realtime
 # pthread: threads (std::thread, std::mutex, std::atomic)
 target_link_libraries(productor${TARGET_SUFFIX} rt pthread)
 target_link_libraries(consumidor${TARGET_SUFFIX} rt pthread)
+target_link_libraries(app${TARGET_SUFFIX} rt)
 
 # Info de build
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
