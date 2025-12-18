@@ -3,8 +3,8 @@
  * @brief Consumidor.
  */
 
+#include "LogMessage.hpp"
 #include "MessageQueue.hpp"
-#include "RingBuffer.hpp"
 #include "TagData.hpp"
 #include <atomic>
 #include <chrono>
@@ -27,16 +27,16 @@ int main() {
     std::signal(SIGTERM, SIG_IGN);
 
     try {
-        RingBuffer buff(10);
-
         cout << "[consumidor] iniciando...\n";
 
+        MessageQueue<LogMessage> logQueue("/tmp", 'L', true);
         MessageQueue<TagData> rxQueue("/tmp", 'B', false);
 
         while(gConsumidorRunning) {
             try {
-                buff.push(data.to_string());
                 TagData data = rxQueue.receive();
+                LogMessage msg{LogMsgType::TAG_DATA, data};
+                logQueue.send(msg);
             }
             catch(const std::runtime_error& e) {
                 if(!gConsumidorRunning) break; /* Por las dudas verifico */
@@ -44,6 +44,8 @@ int main() {
             }
         }
 
+        cout << "[consumidor] eliminado cola de mensajes" << std::endl;
+        logQueue.remove();
         cout << "[consumidor] cerrado con éxito" << std::endl;
     }
     catch(const std::exception& e) {

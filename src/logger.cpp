@@ -44,6 +44,7 @@ int main() {
 
     try {
         cout << "[logger] inicializando sink...\n";
+        MessageQueue<LogMessage> logQueue("/tmp", 'L', false);
 
         Logger logger;
 
@@ -62,6 +63,16 @@ int main() {
 
         cout << "[logger] comenzando a loggear...\n";
 
+        while(gLoggerRunning) {
+            try {
+                LogMessage msg = logQueue.receive();
+                logger.log(msg);
+            }
+            catch(const std::runtime_error& e) {
+                if(!gLoggerRunning) break; /* Por las dudas verifico */
+                throw;
+            }
+        }
 
         cout << "[logger] cerrando logger...\n";
         gLoggerRunning = false;
