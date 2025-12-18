@@ -4,6 +4,7 @@
  */
 
 #include "MessageQueue.hpp"
+#include "System.hpp"
 #include "TagData.hpp"
 #include <atomic>
 #include <csignal>
@@ -60,6 +61,8 @@ int main() {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
     }
+
+    return EXIT_SHUTDOWN;
 }
 
 /*** end of file ***/

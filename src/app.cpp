@@ -1,3 +1,4 @@
+#include "System.hpp"
 #include <atomic>
 #include <csignal>
 #include <iostream>
@@ -6,6 +7,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
+void print_exit(const char* name, int status);
 
 std::atomic<bool> app{true};
 void sigint_handler(int signum) {
@@ -52,22 +55,23 @@ int main(void) {
 
     while(app) { ; }
 
+    int exit;
+
     std::cout << "[app] intentando finalizar el logger" << std::endl;
     kill(pidLogger, SIGUSR1);
-
-    usleep(1000 * 100);
+    waitpid(pidLogger, &exit, 0);
+    print_exit("logger", exit);
 
     std::cout << "[app] intentando finalizar el consumidor" << std::endl;
     kill(pidConsumidor, SIGUSR1);
-
-    usleep(1000 * 100);
+    waitpid(pidConsumidor, &exit, 0);
+    print_exit("consumidor", exit);
 
     std::cout << "[app] intentando finalizar el simulador" << std::endl;
     kill(pidProductor, SIGUSR1);
+    waitpid(pidProductor, &exit, 0);
+    print_exit("productor", exit);
 
-    usleep(1000 * 100);
-
-    // si siguen vivos, a la mierda
     kill(pidLogger, SIGKILL);
     kill(pidProductor, SIGKILL);
     kill(pidConsumidor, SIGKILL);
@@ -79,4 +83,24 @@ int main(void) {
     std::cout << "[app] aplicación cerrada con éxito" << std::endl;
 
     return 0;
+}
+
+void print_exit(const char* name, int status) {
+    if(!WIFEXITED(status)) {
+        std::cout << "[app] " << name << " terminó anormalmente\n";
+        return;
+    }
+
+    switch(WEXITSTATUS(status)) {
+    case EXIT_OK:
+    case EXIT_SHUTDOWN:
+        std::cout << "[app] " << name << " terminó correctamente\n";
+        break;
+    case EXIT_FATAL:
+        std::cout << "[app] " << name << " error fatal\n";
+        break;
+    default:
+        std::cout << "[app] " << name << " terminó con código " << WEXITSTATUS(status) << "\n";
+        break;
+    }
 }

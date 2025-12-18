@@ -6,6 +6,7 @@
 #include "Logger.hpp"
 #include "LogMessage.hpp"
 #include "MessageQueue.hpp"
+#include "System.hpp"
 #include "TagData.hpp"
 #include "TcpServer.hpp"
 #include <atomic>
@@ -85,6 +86,8 @@ int main() {
         std::cerr << "[logger] Perhaps, the producer closed the queque first.\n";
         return 1;
     }
+
+    return EXIT_SHUTDOWN;
 }
 
 /*** end of file ***/

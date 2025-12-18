@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include "System.hpp"
 
 using namespace std;
 
@@ -53,6 +54,8 @@ int main() {
         std::cerr << "[consumidor] Perhaps, the producer closed the queque first.\n";
         return 1;
     }
+
+    return EXIT_SHUTDOWN;
 }
 
 /*** end of file ***/
