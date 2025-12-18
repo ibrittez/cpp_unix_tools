@@ -6,6 +6,7 @@
 #ifndef RINGBUFFER_H
 #define RINGBUFFER_H
 
+#include <mutex>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -16,6 +17,7 @@ public:
     RingBuffer(int length): buffer_(length), head_(0), tail_(0), count_(0) {}
 
     void push(string item) {
+        lock_guard<mutex> lock(mtx_);
 
         buffer_[head_] = item;
         head_ = (head_ + 1) % buffer_.size();
@@ -25,6 +27,7 @@ public:
     }
 
     std::string pop() {
+        lock_guard<mutex> lock(mtx_);
 
         if(count_ == 0) { throw std::runtime_error("empty buffer"); }
 
@@ -36,6 +39,7 @@ public:
     }
 
     std::string peek() const {
+        lock_guard<mutex> lock(mtx_);
 
         if(count_ == 0) { throw std::runtime_error("empty buffer"); }
         return buffer_[tail_];
@@ -56,6 +60,7 @@ private:
     size_t head_;
     size_t tail_;
     size_t count_;
+    mutable mutex mtx_;
 };
 
 #endif /* RINGBUFFER_H */
