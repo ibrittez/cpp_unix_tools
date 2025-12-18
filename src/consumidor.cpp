@@ -6,7 +6,6 @@
 #include "MessageQueue.hpp"
 #include "RingBuffer.hpp"
 #include "TagData.hpp"
-#include "logger_thread.hpp"
 #include <atomic>
 #include <chrono>
 #include <csignal>
@@ -31,8 +30,6 @@ int main() {
         MessageQueue<TagData> queue("/tmp", 'B', true);
         RingBuffer buff(10);
 
-        thread logger(logger_thread, std::ref(buff), std::ref(running));
-
         ofstream logfile("consumidor.log", std::ios::app);
 
         cout << "[consumidor] iniciando...\n";
@@ -53,8 +50,6 @@ int main() {
             }
         }
 
-        cout << "[consumidor] esperando a que termine el hilo logger...\n";
-        logger.join();
         cout << "[consumidor] saliendo..." << std::endl;
     }
     catch(const std::exception& e) {
